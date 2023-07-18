@@ -82,8 +82,8 @@ class Brain(object):
             except Exception as e:
                 logger.critical(f"Failed to execute plugin: {e}", stack_info=True)
                 traceback.print_exc()
-                reply = f"抱歉，插件{plugin.SLUG}出故障了，晚点再试试吧"
-                self.conversation.say(reply, plugin=plugin.SLUG)
+                # reply = f"抱歉，插件{plugin.SLUG}出故障了，晚点再试试吧"
+                # self.conversation.say(reply, plugin=plugin.SLUG)
             else:
                 logger.debug(
                     "Handling of phrase '%s' by " + "plugin '%s' completed",

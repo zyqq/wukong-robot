@@ -191,6 +191,7 @@ class OPENAIRobot(AbstractRobot):
         prefix="",
         proxy="",
         api_base="",
+        functions=[],
     ):
         """
         OpenAI机器人
@@ -220,6 +221,8 @@ class OPENAIRobot(AbstractRobot):
         self.stop_ai = stop_ai
         self.api_base = api_base if api_base else "https://api.openai.com/v1/chat"
         self.context = []
+        self.functions = functions
+        logger.info(f"函数调用 functions：{functions}")
 
     @classmethod
     def get_config(cls):
@@ -243,7 +246,7 @@ class OPENAIRobot(AbstractRobot):
             "Authorization": "Bearer " + self.openai.api_key,
         }
 
-        data = {"model": "gpt-3.5-turbo", "messages": self.context, "stream": True}
+        data = {"model": self.model, "functions": self.functions, "messages": self.context, "stream": True}
         logger.info("开始流式请求")
         url = self.api_base + "/completions"
         # 请求接收流式数据
@@ -268,6 +271,7 @@ class OPENAIRobot(AbstractRobot):
                         if line_str.startswith("data: [DONE]"):
                             break
                         line_json = json.loads(line_str[5:])
+                        logger.info(line_json)
                         if "choices" in line_json:
                             if len(line_json["choices"]) > 0:
                                 choice = line_json["choices"][0]
